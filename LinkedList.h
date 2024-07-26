@@ -10,7 +10,7 @@ class cItem
 		cItem* GetNext(void);
 		void SetPrev(cItem* pItem);
 		cItem* GetPrev(void);
-private:
+	private:
 		int x;
 		cItem* pNext;
 		cItem* pPrev;

@@ -119,91 +119,14 @@ void cList::Sort(void)
 	/*	Choose the first item in the list as the pivot, then take all the other items off the list and
 		group into 2 new lists, one containing items less than the pivot, the other containing items
 		more than the pivot. Then we recursively sort each of those 2 lists, and join everything together
-		by concatenating the less-than-pivot list with the pivot item, with the more-than-pivot list.
+		by concatenating the less-than-pivot list, the pivot item, and the more-than-pivot list.
 	*/
-	cItem *pPivotItem, *pItem;
-	int PivotVal;
-	cList LessThanList, MoreThanList;
 
-	// If the list is empty or has just 1 item in it, no sorting is required.
-	// This check is vital because it stops the recursion going on to an infinite depth.
-	if (NumItems >= 2)
-	{
-		// First, isolate the pivot item.
-		pPivotItem = pFirstItem;
-		pFirstItem = pFirstItem->GetNext();
-		pFirstItem->SetPrev(nullptr);
-		pPivotItem->SetNext(nullptr);
-		NumItems -= 1;
-
-		// Split the list into the less-than and more-than lists.
-		PivotVal = pPivotItem->GetItemVal();
-		// As long as there are still items in the list...
-		for (; NumItems > 0; )
-		{
-			// Detach the first item from the list and tidy up the start of the list, catering for if the list is now empty.
-			pItem = pFirstItem;
-			pFirstItem = pFirstItem->GetNext();
-			if (pFirstItem)
-			{
-				pFirstItem->SetPrev(nullptr);
-			}
-			else
-			{
-				pLastItem = nullptr;
-			}
-			NumItems -= 1;
-			// The detached item should no longer point to any subsequent items in the list.
-			pItem->SetNext(nullptr);
-			// Add the detached item to either the less-than list or the more-than list.
-			if (pItem->GetItemVal() < PivotVal)
-			{
-				LessThanList.AddItem(pItem);
-			}
-			else
-			{
-				MoreThanList.AddItem(pItem);
-			}
-		}
-		
-		/*	We now have 2 lists:	LessThanList	- all the values less than the pivot value, not sorted.
-									MoreThanList	- all the values more than the pivot value, not sorted.
-			and a single item pointed to by pPivotItem.
-		*/
-		// Recursively sort the less-than and more-than lists.
-		LessThanList.Sort();
-		MoreThanList.Sort();
-
-		// Now sew everything together again to make the final, sorted list.
-		if (LessThanList.NumItems > 0)
-		{
-			pFirstItem = LessThanList.pFirstItem;
-			LessThanList.pLastItem->SetNext(pPivotItem);
-			pPivotItem->SetPrev(LessThanList.pLastItem);
-		}
-		else
-		{
-			pFirstItem = pPivotItem;
-		}
-		if (MoreThanList.NumItems > 0)
-		{
-			pPivotItem->SetNext(MoreThanList.pFirstItem);
-			MoreThanList.pFirstItem->SetPrev(pPivotItem);
-			pLastItem = MoreThanList.pLastItem;
-		}
-		else
-		{
-			pLastItem = pPivotItem;
-		}
-		NumItems = LessThanList.NumItems + 1 + MoreThanList.NumItems;
-
-		// LessThanList and MoreThanList will be destructed when they go out of scope at the end of this function,
-		// and the cList destructor will delete all the items in those lists. But we need those items because they
-		// are in our now-sorted list (pointed to by the "this" pointer). So before those 2 lists are destructed,
-		// we need to stop them pointing to the items so they become empty lists.
-		LessThanList.pFirstItem = LessThanList.pLastItem = nullptr;
-		MoreThanList.pFirstItem = MoreThanList.pLastItem = nullptr;
-	}
+	/*	Exercise: Write this quicksort function.
+		To create new cList items, use e.g.:				cItem* pNewItem;
+															pNewItem = new cItem(NewVal);
+		To free up a cList item that is no longer needed:	delete pUnwantedItem;
+	*/
 }
 
 void cList::Print(void)
